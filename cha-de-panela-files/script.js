@@ -542,3 +542,13 @@ window.addNewPresent = addNewPresent;
 window.removePresent = removePresent;
 window.updatePresentStatus = updatePresentStatus;
 window.handlePresentClick = handlePresentClick;
+
+// Toca o áudio quando o usuário interagir
+const player = document.getElementById("player");
+document.body.addEventListener(
+  "click",
+  () => {
+    player.play();
+  },
+  { once: true }
+);
