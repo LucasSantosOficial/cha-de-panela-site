@@ -154,9 +154,21 @@ body {
 
 .intro-text {
   font-size: 1.25rem;
-  color: #374151;
+  color: #513737;
   line-height: 1.8;
   font-weight: 500;
+}
+.intro-text1 {
+  font-size: 1.5rem; /* um pouco maior */
+  color: #af0000; /* vermelho mais vibrante */
+  line-height: 1.8;
+  font-weight: 700; /* mais negrito */
+  background-color: #ffe5e5; /* fundo rosado suave */
+  padding: 1rem;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(163, 1, 1, 0.3); /* sombra vermelha */
+  text-align: center;
 }
 
 /* Presents Section */
@@ -505,4 +517,69 @@ body {
   .present-card {
     padding: 1rem;
   }
+}
+
+/* Container do formulário */
+.form-container {
+  background: #fff0f6;
+  border: 2px solid #ff69b4;
+  border-radius: 15px;
+  padding: 20px;
+  max-width: 40000px;
+  margin: 30px auto;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-family: "Arial", sans-serif;
+}
+
+/* Título */
+.form-container h2 {
+  color: #d63384;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+/* Labels */
+.form-container label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+  color: #444;
+  text-align: left;
+}
+
+/* Inputs */
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="file"],
+.form-container input[type="tel"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.form-container input:focus {
+  border-color: #ff69b4;
+  box-shadow: 0 0 5px rgba(255, 105, 180, 0.6);
+}
+
+/* Botão */
+.form-container button {
+  margin-top: 20px;
+  background: #ff4da6;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.form-container button:hover {
+  background: #d63384;
 }
