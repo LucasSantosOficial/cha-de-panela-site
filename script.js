@@ -535,6 +535,51 @@ document.addEventListener("DOMContentLoaded", function () {
     el.style.transition = "opacity 0.6s ease, transform 0.6s ease";
     observer.observe(el);
   });
+
+  const enviarContribuicaoBtn = document.querySelector(
+    "#doacao-form button[type='submit']"
+  );
+  if (enviarContribuicaoBtn) {
+    enviarContribuicaoBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      const nome =
+        document.getElementById("nome")?.value || "Convidado Anônimo";
+      const presentesSelecionados = presents.filter(
+        (p) => p.status === "selected"
+      );
+
+      if (presentesSelecionados.length === 0) {
+        alert("Selecione pelo menos um presente antes de enviar.");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:3000/send-presents", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            donorName: nome,
+            presents: presentesSelecionados,
+          }),
+        });
+
+        if (response.ok) {
+          alert("Contribuição enviada por e-mail com sucesso!");
+          // Opcional: resetar status dos presentes
+          presents.forEach((p) => {
+            if (p.status === "selected") p.status = "given";
+          });
+          renderPresents();
+        } else {
+          alert("Erro ao enviar contribuição.");
+        }
+      } catch (error) {
+        console.error("Erro:", error);
+        alert("Erro ao enviar contribuição.");
+      }
+    });
+  }
 });
 
 // Exportar funções para uso global (opcional)
@@ -542,3 +587,6 @@ window.addNewPresent = addNewPresent;
 window.removePresent = removePresent;
 window.updatePresentStatus = updatePresentStatus;
 window.handlePresentClick = handlePresentClick;
+
+const dataHora = new Date().toLocaleString("pt-BR");
+subject: `🎁 Nova contribuição de ${donorName} em ${dataHora}`;

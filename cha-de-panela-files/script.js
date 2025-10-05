@@ -2,255 +2,257 @@
 let presents = [
   {
     id: 1,
-    name: "1 ano de academia grátis para os noivos",
-    value: "R$ 80,00",
+    name: "1 ano de academia para os noivos",
+    value: "R$ 30,00",
     status: "available",
     icon: "🏋️",
   },
   {
     id: 2,
     name: "Aulas de culinária para casais",
-    value: "R$ 100,00",
+    value: "R$ 40,00",
     status: "available",
     icon: "🍳",
   },
   {
     id: 3,
     name: "Massagem relaxante para dois",
-    value: "R$ 120,00",
+    value: "R$ 50,00",
     status: "available",
     icon: "💆",
   },
   {
     id: 4,
     name: "Jantar romântico em casa",
-    value: "R$ 150,00",
+    value: "R$ 60,00",
     status: "selected",
     icon: "🍷",
   },
   {
     id: 5,
     name: "Kit sobrevivência para recém-casados",
-    value: "R$ 60,00",
+    value: "R$ 70,00",
     status: "available",
     icon: "🎒",
   },
   {
     id: 6,
     name: "Curso de dança para noivos",
-    value: "R$ 90,00",
+    value: "R$ 80,00",
     status: "given",
     icon: "💃",
   },
   {
     id: 7,
     name: "Sertralina simbólica para manter a paz conjugal",
-    value: "R$ 35,00",
+    value: "R$ 90,00",
     status: "available",
     icon: "💊",
   },
   {
     id: 8,
     name: "Spray anti-pé-frio para noites de cobertor",
-    value: "R$ 25,00",
+    value: "R$ 100,00",
     status: "available",
     icon: "🧦",
   },
   {
     id: 9,
     name: "Vale 'pode escolher o filme hoje'",
-    value: "R$ 30,00",
+    value: "R$ 110,00",
     status: "available",
     icon: "🎥",
   },
   {
     id: 10,
     name: "Kit 'sorria e acene' para momentos tensos",
-    value: "R$ 40,00",
+    value: "R$ 120,00",
     status: "available",
     icon: "🧸",
   },
   {
     id: 11,
     name: "Curso de como elogiar a comida sem mentir",
-    value: "R$ 50,00",
+    value: "R$ 130,00",
     status: "available",
     icon: "🍝",
   },
   {
     id: 12,
     name: "Vale 'dia sem perguntas difíceis'",
-    value: "R$ 20,00",
+    value: "R$ 140,00",
     status: "available",
     icon: "🤐",
   },
   {
     id: 13,
     name: "Kit de emergência para visitas inesperadas",
-    value: "R$ 40,00",
+    value: "R$ 150,00",
     status: "available",
     icon: "🚪",
   },
   {
     id: 14,
     name: "Curso de como dividir o edredom",
-    value: "R$ 35,00",
+    value: "R$ 160,00",
     status: "available",
     icon: "🛏️",
   },
   {
     id: 15,
     name: "Vale 'você estava certo(a)' sem discussão",
-    value: "R$ 20,00",
+    value: "R$ 170,00",
     status: "available",
     icon: "✅",
   },
   {
     id: 16,
     name: "Assinatura de elogios diários personalizados",
-    value: "R$ 90,00",
+    value: "R$ 180,00",
     status: "available",
     icon: "💌",
   },
   {
     id: 17,
     name: "Curso de como não mexer no celular durante o jantar",
-    value: "R$ 40,00",
+    value: "R$ 190,00",
     status: "available",
     icon: "📵",
   },
   {
     id: 18,
     name: "Vale 'sem perguntas durante futebol'",
-    value: "R$ 25,00",
+    value: "R$ 200,00",
     status: "available",
     icon: "⚽",
   },
   {
     id: 19,
     name: "Kit de desculpas criativas para esquecer o lixo",
-    value: "R$ 30,00",
+    value: "R$ 210,00",
     status: "available",
     icon: "🗑️",
   },
   {
     id: 20,
     name: "Curso de como fingir interesse em séries alheias",
-    value: "R$ 50,00",
+    value: "R$ 220,00",
     status: "available",
     icon: "🎬",
   },
   {
     id: 21,
     name: "Manual de como não brigar por besteira",
-    value: "R$ 25,00",
+    value: "R$ 230,00",
     status: "available",
     icon: "📘",
   },
   {
     id: 22,
     name: "Almofada com botão de desculpas automáticas",
-    value: "R$ 45,00",
+    value: "R$ 240,00",
     status: "available",
     icon: "🛋️",
   },
   {
     id: 23,
     name: "Curso intensivo de 'quem lava a louça hoje'",
-    value: "R$ 70,00",
+    value: "R$ 250,00",
     status: "available",
     icon: "🍽️",
   },
   {
     id: 24,
     name: "Vale noite sem ronco",
-    value: "R$ 30,00",
+    value: "R$ 260,00",
     status: "available",
     icon: "😴",
   },
   {
     id: 25,
     name: "Kit de sobrevivência em compras no shopping",
-    value: "R$ 55,00",
+    value: "R$ 270,00",
     status: "available",
     icon: "🛍️",
   },
   {
     id: 26,
     name: "Curso de como elogiar sem parecer forçado",
-    value: "R$ 40,00",
+    value: "R$ 280,00",
     status: "available",
     icon: "🗣️",
   },
   {
     id: 27,
     name: "Jogo de tabuleiro 'Quem manda aqui?'",
-    value: "R$ 60,00",
+    value: "R$ 290,00",
     status: "available",
     icon: "🎲",
   },
   {
     id: 28,
     name: "Vale 'dia do sofá e série sem culpa'",
-    value: "R$ 50,00",
+    value: "R$ 300,00",
     status: "available",
     icon: "📺",
   },
   {
-    id: 33,
-    name: "Parcela simbólica da Ferrari do noivo",
-    value: "R$ 2.000,00",
-    status: "available",
-    icon: "🏎️",
-  },
-  {
-    id: 34,
-    name: "Viagem de autoconhecimento da noiva pro Canadá",
-    value: "R$ 1.000,00",
-    status: "available",
-    icon: "🛫",
-  },
-  {
-    id: 35,
-    name: "Curso de etiqueta para jantares com a realeza",
-    value: "R$ 1.500,00",
-    status: "available",
-    icon: "👑",
-  },
-  {
-    id: 36,
-    name: "Drone personalizado para vigiar o noivo no futebol",
-    value: "R$ 2.200,00",
-    status: "available",
-    icon: "🛸",
-  },
-  {
-    id: 37,
-    name: "Robô aspirador com sensor de ciúmes",
-    value: "R$ 1.800,00",
-    status: "available",
-    icon: "🤖",
-  },
-  {
-    id: 38,
-    name: "Assinatura vitalícia de sorvete gourmet para crises existenciais",
-    value: "R$ 2.000,00",
-    status: "available",
-    icon: "🍨",
-  },
-  {
-    id: 39,
+    id: 29,
     name: "Óculos de realidade virtual para fugir de DRs",
-    value: "R$ 1.500,00",
+    value: "R$ 400,00",
     status: "available",
     icon: "🕶️",
   },
   {
-    id: 40,
+    id: 30,
     name: "Jetpack para escapar de tarefas domésticas",
-    value: "R$ 2.500,00",
+    value: "R$ 500,00",
     status: "available",
     icon: "🚀",
+  },
+
+  {
+    id: 31,
+    name: "Agenda para não esquecer datas importantes para o noivo",
+    value: "R$ 900,00",
+    status: "available",
+    icon: "📒",
+  },
+  {
+    id: 32,
+    name: "Drone personalizado para vigiar o noivo no futebol",
+    value: "R$ 1.000,00",
+    status: "available",
+    icon: "🛸",
+  },
+  {
+    id: 33,
+    name: "Robô aspirador com sensor de ciúmes",
+    value: "R$ 1.500,00",
+    status: "available",
+    icon: "🤖",
+  },
+  {
+    id: 34,
+    name: "Assinatura vitalícia de sorvete gourmet para crises da noiva",
+    value: "R$ 2.000,00",
+    status: "available",
+    icon: "🍨",
+  },
+
+  {
+    id: 35,
+    name: "Parcela simbólica da Ferrari do noivo",
+    value: "R$ 2.500,00",
+    status: "available",
+    icon: "🏎️",
+  },
+  {
+    id: 36,
+    name: "Viagem de autoconhecimento da noiva pro Canadá",
+    value: "R$ 3.000,00",
+    status: "available",
+    icon: "🛫",
   },
 ];
 
@@ -543,12 +545,60 @@ window.removePresent = removePresent;
 window.updatePresentStatus = updatePresentStatus;
 window.handlePresentClick = handlePresentClick;
 
-// Toca o áudio quando o usuário interagir
 const player = document.getElementById("player");
+
+// Define o caminho do arquivo de áudio
+const caminhoDaMusica = "tapasebeijos.mp3"; // ou "musica/tapas-e-beijos.mp3"
+
+const source = document.createElement("source");
+source.src = caminhoDaMusica;
+source.type = "audio/mpeg";
+
+// Adiciona o <source> ao <audio>
+player.appendChild(source);
+
+// Toca após interação do usuário
 document.body.addEventListener(
   "click",
   () => {
+    player.load(); // carrega o novo source
     player.play();
   },
   { once: true }
 );
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const pool = new Pool({
+  user: "seu_usuario",
+  host: "localhost",
+  database: "chadepanela",
+  password: "sua_senha",
+  port: 5432,
+});
+
+app.post("/presents", async (req, res) => {
+  const presents = req.body;
+  try {
+    for (const p of presents) {
+      await pool.query(
+        "INSERT INTO presents (id, name, value, status, icon) VALUES ($1, $2, $3, $4, $5)",
+        [p.id, p.name, p.value, p.status, p.icon]
+      );
+    }
+    res.send("Presentes inseridos com sucesso!");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erro ao inserir presentes");
+  }
+});
+
+app.listen(3000, () => console.log("Servidor rodando na porta 3000"));
+
+fetch("http://localhost:3000/presents", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(presents),
+});
