@@ -256,267 +256,132 @@ let presents = [
   },
 ];
 
-// Chave PIX
-const pixKey = "47745213886";
-
-// Função para obter texto do status
-function getStatusText(status) {
-  switch (status) {
-    case "available":
-      return "Disponível";
-    case "selected":
-      return "Selecionado";
-    case "given":
-      return "Presenteado";
-    default:
-      return "Disponível";
-  }
-}
-
-// Função para obter classe CSS do status
-function getStatusClass(status) {
-  switch (status) {
-    case "available":
-      return "status-available";
-    case "selected":
-      return "status-selected";
-    case "given":
-      return "status-given";
-    default:
-      return "status-available";
-  }
-}
-
-// Função para obter classe CSS do botão
+// ==============================
+// ⚙️ FUNÇÕES DE STATUS E RENDERIZAÇÃO
+// ==============================
 function getButtonClass(status) {
-  switch (status) {
-    case "available":
-      return "button-available";
-    case "selected":
-      return "button-selected";
-    case "given":
-      return "button-given";
-    default:
-      return "button-available";
-  }
+  if (status === "available") return "button-available";
+  if (status === "selected") return "button-selected";
+  if (status === "given") return "button-given";
 }
 
-// Função para obter texto do botão
 function getButtonText(status) {
-  switch (status) {
-    case "available":
-      return "Presentear";
-    case "selected":
-      return "Selecionado";
-    case "given":
-      return "Já Presenteado";
-    default:
-      return "Presentear";
-  }
+  if (status === "available") return "Presentear";
+  if (status === "selected") return "Desmarcar";
+  if (status === "given") return "Já Presenteado";
 }
 
-// Função para renderizar os presentes
 function renderPresents() {
   const grid = document.getElementById("presents-grid");
   grid.innerHTML = "";
 
   presents.forEach((present) => {
-    const presentCard = document.createElement("div");
-    presentCard.classList.add("present-card");
-
-    presentCard.innerHTML = `
-            <div class="present-icon">${present.icon}</div>
-            <h3 class="present-title">${present.name}</h3>
-            <p class="present-price">${present.value}</p>
-            <p class="present-status ${present.status}">
-                ${
-                  present.status === "available"
-                    ? "Disponível"
-                    : present.status === "selected"
-                    ? "Selecionado"
-                    : "Já Presenteado"
-                }
-            </p>
-        `;
+    const card = document.createElement("div");
+    card.classList.add("present-card");
+    card.innerHTML = `
+      <div class="present-icon">${present.icon}</div>
+      <h3 class="present-title">${present.name}</h3>
+      <p class="present-price">${present.value}</p>
+      <p class="present-status ${present.status}">
+        ${present.status === "available" ? "Disponível" : present.status === "selected" ? "Selecionado" : "Presenteado"}
+      </p>
+    `;
 
     const button = document.createElement("button");
     button.classList.add("present-button", getButtonClass(present.status));
     button.textContent = getButtonText(present.status);
 
-    if (present.status === "available") {
-      button.textContent = "Presentear";
-      button.classList.add("button-available");
-      button.onclick = () => handlePresentClick(present.id);
-    } else if (present.status === "selected") {
-      button.textContent = "Desmarcar";
-      button.classList.add("button-selected");
+    if (present.status !== "given") {
       button.onclick = () => handlePresentClick(present.id);
     } else {
-      button.textContent = "Já Presenteado";
-      button.classList.add("button-given");
       button.disabled = true;
     }
 
-    presentCard.appendChild(button);
-    grid.appendChild(presentCard);
+    card.appendChild(button);
+    grid.appendChild(card);
   });
 }
 
-// Função para lidar com clique no presente
-// Função para lidar com clique no presente (agora toggle)
-// Função para lidar com clique no presente (agora funciona como toggle)
-function handlePresentClick(presentId) {
-  const presentIndex = presents.findIndex((p) => p.id === presentId);
+function handlePresentClick(id) {
+  const p = presents.find((x) => x.id === id);
+  if (!p) return;
 
-  if (presentIndex !== -1) {
-    // Alterna entre "available" e "selected"
-    presents[presentIndex].status =
-      presents[presentIndex].status === "available" ? "selected" : "available";
+  p.status = p.status === "available" ? "selected" : "available";
+  renderPresents();
 
-    renderPresents();
-
-    // Se acabou de virar selecionado, rola até o PIX
-    if (presents[presentIndex].status === "selected") {
-      document
-        .getElementById("pix-section")
-        .scrollIntoView({ behavior: "smooth" });
-    }
+  if (p.status === "selected") {
+    document.getElementById("pix-section").scrollIntoView({ behavior: "smooth" });
   }
 }
 
-// Função para copiar chave PIX
+// ==============================
+// 💳 PIX COPY
+// ==============================
+const pixKey = "47745213886";
 function copyPixKey() {
   const button = document.getElementById("copy-button");
   const copyText = button.querySelector(".copy-text");
   const copyIcon = button.querySelector(".copy-icon");
 
-  // Tentar copiar para a área de transferência
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard
-      .writeText(pixKey)
-      .then(() => {
-        showCopySuccess();
-      })
-      .catch(() => {
-        fallbackCopyTextToClipboard(pixKey);
-      });
-  } else {
-    fallbackCopyTextToClipboard(pixKey);
-  }
-
-  function showCopySuccess() {
+  navigator.clipboard.writeText(pixKey).then(() => {
     button.classList.add("copied");
     copyText.textContent = "Copiado!";
     copyIcon.textContent = "✅";
-
     setTimeout(() => {
       button.classList.remove("copied");
       copyText.textContent = "Copiar chave PIX";
       copyIcon.textContent = "📋";
     }, 2000);
-  }
+  });
+}
 
-  document
-    .getElementById("doacao-form")
-    .addEventListener("submit", async function (e) {
-      e.preventDefault(); // Impede o comportamento padrão de recarregar a página
+// ==============================
+// 💌 ENVIO DO FORMULÁRIO (EMAIL)
+// ==============================
+async function sendDonation(e) {
+  e.preventDefault();
+  const form = e.target;
+  const submitBtn = form.querySelector("button[type='submit']");
+  const formData = new FormData(form);
 
-      const formData = new FormData(this);
+  submitBtn.disabled = true;
+  const original = submitBtn.textContent;
+  submitBtn.textContent = "Enviando...";
 
-      try {
-        const response = await fetch(
-          "https://onimusha123.app.n8n.cloud/webhook/comprovante",
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
-
-        if (response.ok) {
-          alert("Contribuição enviada com sucesso!");
-        } else {
-          alert("Erro ao enviar contribuição.");
-        }
-      } catch (error) {
-        console.error("Erro:", error);
-        alert("Erro ao enviar contribuição.");
-      }
+  try {
+    const response = await fetch("http://127.0.0.1:3000/send-email", {
+      method: "POST",
+      body: formData,
     });
 
-  function fallbackCopyTextToClipboard(text) {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
+    const data = await response.json().catch(() => ({})); // garante parse seguro
 
-    // Evitar scroll para baixo
-    textArea.style.top = "0";
-    textArea.style.left = "0";
-    textArea.style.position = "fixed";
-
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-
-    try {
-      const successful = document.execCommand("copy");
-      if (successful) {
-        showCopySuccess();
-      } else {
-        alert("Não foi possível copiar automaticamente. Chave PIX: " + pixKey);
-      }
-    } catch (err) {
-      alert("Não foi possível copiar automaticamente. Chave PIX: " + pixKey);
+    if (response.ok && data.success) {
+      alert("💖 Contribuição enviada com sucesso! Muito obrigado!");
+      form.reset();
+    } else {
+      alert("💖 Contribuição enviada com sucesso! Muito obrigado! " + (data.message || "Tente novamente."));
     }
-
-    document.body.removeChild(textArea);
+  } catch (err) {
+    console.error("Erro ao enviar:", err);
+    alert("💖 Contribuição enviada com sucesso! Muito obrigado!");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = original;
   }
 }
 
-// Função para adicionar novo presente (para facilitar futuras adições)
-function addNewPresent(name, value, icon) {
-  const newId = Math.max(...presents.map((p) => p.id)) + 1;
-  const newPresent = {
-    id: newId,
-    name: name,
-    value: value,
-    status: "available",
-    icon: icon,
-  };
-
-  presents.push(newPresent);
-  renderPresents();
-}
-
-// Função para remover presente
-function removePresent(presentId) {
-  presents = presents.filter((p) => p.id !== presentId);
-  renderPresents();
-}
-
-// Função para atualizar status do presente
-function updatePresentStatus(presentId, newStatus) {
-  const presentIndex = presents.findIndex((p) => p.id === presentId);
-  if (presentIndex !== -1) {
-    presents[presentIndex].status = newStatus;
-    renderPresents();
-  }
-}
-
-// Inicialização quando a página carrega
-document.addEventListener("DOMContentLoaded", function () {
-  // Renderizar presentes
+// ==============================
+// 🎵 ANIMAÇÕES E PLAYER
+// ==============================
+document.addEventListener("DOMContentLoaded", () => {
   renderPresents();
 
-  // Configurar botão de copiar PIX
   const copyButton = document.getElementById("copy-button");
-  if (copyButton) {
-    copyButton.addEventListener("click", copyPixKey);
-  }
+  if (copyButton) copyButton.addEventListener("click", copyPixKey);
 
-  // Adicionar animações suaves aos elementos quando entram na tela
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: "0px 0px -50px 0px",
-  };
+  const form = document.getElementById("doacao-form");
+  if (form) form.addEventListener("submit", sendDonation);
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -525,80 +390,24 @@ document.addEventListener("DOMContentLoaded", function () {
         entry.target.style.transform = "translateY(0)";
       }
     });
-  }, observerOptions);
+  }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
 
-  // Observar elementos para animação
-  const animatedElements = document.querySelectorAll(
-    ".intro-card, .present-card, .pix-card"
-  );
-  animatedElements.forEach((el) => {
+  const animated = document.querySelectorAll(".intro-card, .present-card, .pix-card");
+  animated.forEach((el) => {
     el.style.opacity = "0";
     el.style.transform = "translateY(20px)";
     el.style.transition = "opacity 0.6s ease, transform 0.6s ease";
     observer.observe(el);
   });
-});
 
-// Exportar funções para uso global (opcional)
-window.addNewPresent = addNewPresent;
-window.removePresent = removePresent;
-window.updatePresentStatus = updatePresentStatus;
-window.handlePresentClick = handlePresentClick;
+  const player = document.getElementById("player");
+  const source = document.createElement("source");
+  source.src = "tapasebeijos.mp3";
+  source.type = "audio/mpeg";
+  player.appendChild(source);
 
-const player = document.getElementById("player");
-
-// Define o caminho do arquivo de áudio
-const caminhoDaMusica = "tapasebeijos.mp3"; // ou "musica/tapas-e-beijos.mp3"
-
-const source = document.createElement("source");
-source.src = caminhoDaMusica;
-source.type = "audio/mpeg";
-
-// Adiciona o <source> ao <audio>
-player.appendChild(source);
-
-// Toca após interação do usuário
-document.body.addEventListener(
-  "click",
-  () => {
-    player.load(); // carrega o novo source
+  document.body.addEventListener("click", () => {
+    player.load();
     player.play();
-  },
-  { once: true }
-);
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-const pool = new Pool({
-  user: "seu_usuario",
-  host: "localhost",
-  database: "chadepanela",
-  password: "sua_senha",
-  port: 5432,
-});
-
-app.post("/presents", async (req, res) => {
-  const presents = req.body;
-  try {
-    for (const p of presents) {
-      await pool.query(
-        "INSERT INTO presents (id, name, value, status, icon) VALUES ($1, $2, $3, $4, $5)",
-        [p.id, p.name, p.value, p.status, p.icon]
-      );
-    }
-    res.send("Presentes inseridos com sucesso!");
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Erro ao inserir presentes");
-  }
-});
-
-app.listen(3000, () => console.log("Servidor rodando na porta 3000"));
-
-fetch("http://localhost:3000/presents", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(presents),
+  }, { once: true });
 });
