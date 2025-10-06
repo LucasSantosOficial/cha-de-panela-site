@@ -1,3 +1,6 @@
+![Descrição da imagem](assets.png)
+
+
 # Site Chá de Panela - Lucas ❤️ Duda
 
 Um site moderno, divertido e romântico para o chá de panela do casal Lucas e Duda.
