@@ -14,23 +14,22 @@ const fs = require("fs");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuração CORS completa (garante resposta ao navegador)
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type"]
-}));
-
+app.use(cors()); // permite requisições do front-end
 app.use(express.json());
-app.use(express.static(path.join(__dirname))); // serve html/css/js
+app.use(express.static(path.join(__dirname))); // serve index.html, css, js, etc.
 
 // ===============================
 // 📎 CONFIGURAÇÃO DO MULTER (upload)
 const upload = multer({
   dest: "uploads/",
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20 MB
+  limits: { fileSize: 20 * 1024 * 1024 }, // limite: 20 MB
   fileFilter: (req, file, cb) => {
-    const allowed = ["image/jpeg", "image/png", "application/pdf", "image/jpg"];
+    const allowed = [
+      "image/jpeg",
+      "image/png",
+      "application/pdf",
+      "image/jpg",
+    ];
     if (allowed.includes(file.mimetype)) cb(null, true);
     else cb(new Error("Apenas imagens (JPG/PNG) ou PDF são permitidos."));
   },
@@ -42,10 +41,13 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "lucas.santos.contatoempresarial@gmail.com",
-    pass: "elgqupdpugtjhaet", // senha de aplicativo
+    pass: "elgqupdpugtjhaet", // ⚠️ senha de aplicativo, não a do Gmail normal
   },
 });
 
+// ===================================================
+// 📤 ROTA DE ENVIO DE CONTRIBUIÇÃO
+// ===================================================
 app.post("/send-email", upload.single("receipt"), async (req, res) => {
   try {
     console.log("📩 Requisição recebida:", req.body);
@@ -68,7 +70,7 @@ app.post("/send-email", upload.single("receipt"), async (req, res) => {
       <p>📎 O comprovante está anexado a este e-mail.</p>
     `;
 
-    // Envio do e-mail
+    // Envia o e-mail
     await transporter.sendMail({
       from: '"Chá de Panela 💕" <lucas.santos.contatoempresarial@gmail.com>',
       to: "lucas.santos.contatoempresarial@gmail.com",
@@ -85,27 +87,21 @@ app.post("/send-email", upload.single("receipt"), async (req, res) => {
 
     console.log(`💗 Contribuição recebida de ${donorName}`);
 
-    // ✅ Resposta imediata de sucesso
-    res.status(200).json({
+    // ✅ Resposta correta ao navegador
+    return res.status(200).json({
       success: true,
       message: "E-mail enviado com sucesso!",
     });
-
-    // ✅ Após responder, faz limpeza assíncrona sem travar o retorno
-    setTimeout(() => {
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-    }, 30000);
   } catch (err) {
     console.error("❌ Erro ao enviar e-mail:", err);
-    if (!res.headersSent) {
-      res.status(500).json({
-        success: false,
-        message: "Erro ao enviar e-mail.",
-        error: err.message,
-      });
-    }
+    return res.status(500).json({
+      success: false,
+      message: "Erro ao enviar e-mail.",
+      error: err.message,
+    });
   }
 });
+
 // ===============================
 // 🌐 ROTA PADRÃO (opcional)
 app.get("/", (req, res) => {
@@ -114,6 +110,6 @@ app.get("/", (req, res) => {
 
 // ===============================
 // 🚀 INICIA O SERVIDOR
-app.listen(PORT, "127.0.0.1", () => {
-  console.log(`Servidor rodando em http://127.0.0.1:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Servidor rodando em http://localhost:${PORT}`);
 });

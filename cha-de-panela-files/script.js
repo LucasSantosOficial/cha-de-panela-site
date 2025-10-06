@@ -343,6 +343,9 @@ async function sendDonation(e) {
   const form = e.target;
   const submitBtn = form.querySelector("button[type='submit']");
   const formData = new FormData(form);
+  formData.append("giftId", selectedGift.id);
+formData.append("giftName", selectedGift.name);
+
 
   submitBtn.disabled = true;
   const original = submitBtn.textContent;
@@ -411,3 +414,17 @@ document.addEventListener("DOMContentLoaded", () => {
     player.play();
   }, { once: true });
 });
+
+
+let selectedGift = null;
+
+function handlePresentClick(id) {
+  const p = presents.find((x) => x.id === id);
+  if (!p) return;
+
+  selectedGift = p; // guarda o presente selecionado
+  p.status = "selected";
+  renderPresents();
+
+  document.getElementById("pix-section").scrollIntoView({ behavior: "smooth" });
+}
