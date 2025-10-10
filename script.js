@@ -278,40 +278,53 @@ function renderPresents() {
   presents.forEach((present) => {
     const card = document.createElement("div");
     card.classList.add("present-card");
+
+    // Verifica se o presente já foi esgotado
+    const isGiven = present.count >= present.max;
+
+    // Define status visual
+    const statusText = isGiven
+      ? "Presenteado"
+      : present.status === "selected"
+      ? "Selecionado"
+      : "Disponível";
+
+    const statusClass = isGiven ? "given" : present.status;
+
+    // Define botão
+    const button = document.createElement("button");
+    button.classList.add(
+      "present-button",
+      isGiven
+        ? "button-given"
+        : present.status === "selected"
+        ? "button-selected"
+        : "button-available"
+    );
+
+    button.textContent = isGiven
+      ? "Já Presentado"
+      : present.status === "selected"
+      ? "Selecionado"
+      : "Presentear";
+
+    if (isGiven) {
+      button.disabled = true;
+    } else {
+      button.onclick = () => handlePresentClick(present.id);
+    }
+
+    // Monta o card
     card.innerHTML = `
       <div class="present-icon">${present.icon}</div>
       <h3 class="present-title">${present.name}</h3>
       <p class="present-price">${present.value}</p>
-      <p class="present-status ${present.status}">
-        ${present.status === "available" ? "Disponível" : present.status === "selected" ? "Selecionado" : "Presenteado"}
-      </p>
+      <p class="present-status status-${statusClass}">${statusText}</p>
     `;
-
-    const button = document.createElement("button");
-    button.classList.add("present-button", getButtonClass(present.status));
-    button.textContent = getButtonText(present.status);
-
-    if (present.status !== "given") {
-      button.onclick = () => handlePresentClick(present.id);
-    } else {
-      button.disabled = true;
-    }
 
     card.appendChild(button);
     grid.appendChild(card);
   });
-}
-
-function handlePresentClick(id) {
-  const p = presents.find((x) => x.id === id);
-  if (!p) return;
-
-  p.status = p.status === "available" ? "selected" : "available";
-  renderPresents();
-
-  if (p.status === "selected") {
-    document.getElementById("pix-section").scrollIntoView({ behavior: "smooth" });
-  }
 }
 
 // ==============================
@@ -340,19 +353,27 @@ function copyPixKey() {
 // ==============================
 async function sendDonation(e) {
   e.preventDefault();
+
+  // ✅ Verifica se o presente foi selecionado
+  if (!selectedGift) {
+    alert("Por favor, selecione um presente antes de enviar.");
+    return;
+  }
+
   const form = e.target;
   const submitBtn = form.querySelector("button[type='submit']");
   const formData = new FormData(form);
-  formData.append("giftId", selectedGift.id);
-formData.append("giftName", selectedGift.name);
 
+  // Adiciona os dados do presente
+  formData.append("giftId", selectedGift.id);
+  formData.append("giftName", selectedGift.name);
 
   submitBtn.disabled = true;
   const original = submitBtn.textContent;
   submitBtn.textContent = "Enviando...";
 
   try {
-    const response = await fetch("http://127.0.0.1:3000/send-email", {
+    const response = await fetch("http://localhost:3001/proxy", {
       method: "POST",
       body: formData,
     });
@@ -363,7 +384,10 @@ formData.append("giftName", selectedGift.name);
       alert("💖 Contribuição enviada com sucesso! Muito obrigado!");
       form.reset();
     } else {
-      alert("💖 Contribuição enviada com sucesso! Muito obrigado! " + (data.message || "Tente novamente."));
+      alert(
+        "💖 Contribuição enviada com sucesso! Muito obrigado! " +
+          (data.message || "Tente novamente.")
+      );
     }
   } catch (err) {
     console.error("Erro ao enviar:", err);
@@ -386,16 +410,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("doacao-form");
   if (form) form.addEventListener("submit", sendDonation);
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = "1";
-        entry.target.style.transform = "translateY(0)";
-      }
-    });
-  }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = "1";
+          entry.target.style.transform = "translateY(0)";
+        }
+      });
+    },
+    { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+  );
 
-  const animated = document.querySelectorAll(".intro-card, .present-card, .pix-card");
+  const animated = document.querySelectorAll(
+    ".intro-card, .present-card, .pix-card"
+  );
   animated.forEach((el) => {
     el.style.opacity = "0";
     el.style.transform = "translateY(20px)";
@@ -409,12 +438,15 @@ document.addEventListener("DOMContentLoaded", () => {
   source.type = "audio/mpeg";
   player.appendChild(source);
 
-  document.body.addEventListener("click", () => {
-    player.load();
-    player.play();
-  }, { once: true });
+  document.body.addEventListener(
+    "click",
+    () => {
+      player.load();
+      player.play();
+    },
+    { once: true }
+  );
 });
-
 
 let selectedGift = null;
 

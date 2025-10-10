@@ -284,9 +284,10 @@ body {
 }
 
 .button-given {
-  background-color: #9ca3af;
-  color: #6b7280;
+  background-color: #ccc;
+  color: #666;
   cursor: not-allowed;
+  font-style: italic;
 }
 
 /* PIX Section */
