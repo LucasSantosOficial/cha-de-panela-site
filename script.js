@@ -25,7 +25,7 @@ let presents = [
     id: 4,
     name: "Jantar romântico em casa",
     value: "R$ 60,00",
-    status: "selected",
+    status: "available",
     icon: "🍷",
   },
   {
@@ -39,7 +39,7 @@ let presents = [
     id: 6,
     name: "Curso de dança para noivos",
     value: "R$ 80,00",
-    status: "given",
+    status: "available",
     icon: "💃",
   },
   {
@@ -302,16 +302,27 @@ function renderPresents() {
   });
 }
 
+// ==============================
+// 🎁 LÓGICA DE SELEÇÃO DE PRESENTES
+// ==============================
+let selectedGift = null;
+
 function handlePresentClick(id) {
   const p = presents.find((x) => x.id === id);
   if (!p) return;
 
-  p.status = p.status === "available" ? "selected" : "available";
-  renderPresents();
-
-  if (p.status === "selected") {
+  // Alterna entre selecionar e desmarcar
+  if (p.status === "available") {
+    if (selectedGift) selectedGift.status = "available"; // desmarca anterior
+    p.status = "selected";
+    selectedGift = p;
     document.getElementById("pix-section").scrollIntoView({ behavior: "smooth" });
+  } else if (p.status === "selected") {
+    p.status = "available";
+    selectedGift = null;
   }
+
+  renderPresents();
 }
 
 // ==============================
@@ -343,31 +354,33 @@ async function sendDonation(e) {
   const form = e.target;
   const submitBtn = form.querySelector("button[type='submit']");
   const formData = new FormData(form);
-  formData.append("giftId", selectedGift.id);
-formData.append("giftName", selectedGift.name);
 
+  // Impede erro se nenhum presente estiver selecionado
+  if (!selectedGift) {
+    alert("Por favor, selecione um presente antes de enviar ❤️");
+    return;
+  }
+
+  formData.append("giftId", selectedGift.id);
+  formData.append("giftName", selectedGift.name);
 
   submitBtn.disabled = true;
   const original = submitBtn.textContent;
   submitBtn.textContent = "Enviando...";
 
   try {
-    const response = await fetch("http://127.0.0.1:3000/send-email", {
+    const response = await fetch("https://cha-de-panela-site.vercel.app/send-email", {
       method: "POST",
       body: formData,
     });
 
-    const data = await response.json().catch(() => ({})); // garante parse seguro
+    const data = await response.json().catch(() => ({}));
 
-    if (response.ok && data.success) {
-      alert("💖 Contribuição enviada com sucesso! Muito obrigado!");
-      form.reset();
-    } else {
-      alert("💖 Contribuição enviada com sucesso! Muito obrigado! " + (data.message || "Tente novamente."));
-    }
+    alert("💖 Contribuição enviada com sucesso! Muito obrigado!");
+    form.reset();
   } catch (err) {
     console.error("Erro ao enviar:", err);
-    alert("💖 Contribuição enviada com sucesso! Muito obrigado!");
+    alert("Erro ao enviar. Tente novamente.");
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = original;
@@ -386,14 +399,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("doacao-form");
   if (form) form.addEventListener("submit", sendDonation);
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = "1";
-        entry.target.style.transform = "translateY(0)";
-      }
-    });
-  }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = "1";
+          entry.target.style.transform = "translateY(0)";
+        }
+      });
+    },
+    { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+  );
 
   const animated = document.querySelectorAll(".intro-card, .present-card, .pix-card");
   animated.forEach((el) => {
@@ -403,28 +419,19 @@ document.addEventListener("DOMContentLoaded", () => {
     observer.observe(el);
   });
 
+  // Player de música
   const player = document.getElementById("player");
   const source = document.createElement("source");
   source.src = "tapasebeijos.mp3";
   source.type = "audio/mpeg";
   player.appendChild(source);
 
-  document.body.addEventListener("click", () => {
-    player.load();
-    player.play();
-  }, { once: true });
+  document.body.addEventListener(
+    "click",
+    () => {
+      player.load();
+      player.play();
+    },
+    { once: true }
+  );
 });
-
-
-let selectedGift = null;
-
-function handlePresentClick(id) {
-  const p = presents.find((x) => x.id === id);
-  if (!p) return;
-
-  selectedGift = p; // guarda o presente selecionado
-  p.status = "selected";
-  renderPresents();
-
-  document.getElementById("pix-section").scrollIntoView({ behavior: "smooth" });
-}
