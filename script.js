@@ -383,7 +383,8 @@ async function sendDonation(e) {
   submitBtn.textContent = "Enviando...";
 
   try {
-    const response = await fetch("http://127.0.0.1:3000/send-email", {
+   const response = await fetch("https://cha-de-panela-site.vercel.app/send-email", {
+
       method: "POST",
       body: formData,
     });
@@ -459,9 +460,19 @@ function handlePresentClick(id) {
   const p = presents.find((x) => x.id === id);
   if (!p) return;
 
-  selectedGift = p; // guarda o presente selecionado
-  p.status = "selected";
-  renderPresents();
+  // Alterna o status
+  if (p.status === "available") {
+    // Marca como selecionado
+    if (selectedGift) selectedGift.status = "available"; // desmarca o anterior
+    p.status = "selected";
+    selectedGift = p;
+    document.getElementById("pix-section").scrollIntoView({ behavior: "smooth" });
+  } else if (p.status === "selected") {
+    // Desmarca
+    p.status = "available";
+    selectedGift = null;
+  }
 
-  document.getElementById("pix-section").scrollIntoView({ behavior: "smooth" });
+  renderPresents();
 }
+
