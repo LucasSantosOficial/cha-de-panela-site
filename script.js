@@ -278,51 +278,65 @@ function renderPresents() {
   presents.forEach((present) => {
     const card = document.createElement("div");
     card.classList.add("present-card");
+
+    // Verifica se o presente já foi esgotado
+    const isGiven = present.count >= present.max;
+
+    // Define status visual
+    const statusText = isGiven
+      ? "Presenteado"
+      : present.status === "selected"
+      ? "Selecionado"
+      : "Disponível";
+
+    const statusClass = isGiven ? "given" : present.status;
+
+    // Define botão
+    const button = document.createElement("button");
+    button.classList.add(
+      "present-button",
+      isGiven
+        ? "button-given"
+        : present.status === "selected"
+        ? "button-selected"
+        : "button-available"
+    );
+
+    button.textContent = isGiven
+      ? "Já Presentado"
+      : present.status === "selected"
+      ? "Selecionado"
+      : "Presentear";
+
+    if (isGiven) {
+      button.disabled = true;
+    } else {
+      button.onclick = () => handlePresentClick(present.id);
+    }
+
+    // Monta o card
     card.innerHTML = `
       <div class="present-icon">${present.icon}</div>
       <h3 class="present-title">${present.name}</h3>
       <p class="present-price">${present.value}</p>
-      <p class="present-status ${present.status}">
-        ${present.status === "available" ? "Disponível" : present.status === "selected" ? "Selecionado" : "Presenteado"}
-      </p>
+      <p class="present-status status-${statusClass}">${statusText}</p>
     `;
-
-    const button = document.createElement("button");
-    button.classList.add("present-button", getButtonClass(present.status));
-    button.textContent = getButtonText(present.status);
-
-    if (present.status !== "given") {
-      button.onclick = () => handlePresentClick(present.id);
-    } else {
-      button.disabled = true;
-    }
 
     card.appendChild(button);
     grid.appendChild(card);
   });
 }
 
-// ==============================
-// 🎁 LÓGICA DE SELEÇÃO DE PRESENTES
-// ==============================
-let selectedGift = null;
-
 function handlePresentClick(id) {
   const p = presents.find((x) => x.id === id);
   if (!p) return;
 
-  // Alterna entre selecionar e desmarcar
-  if (p.status === "available") {
-    if (selectedGift) selectedGift.status = "available"; // desmarca anterior
-    p.status = "selected";
-    selectedGift = p;
-    document.getElementById("pix-section").scrollIntoView({ behavior: "smooth" });
-  } else if (p.status === "selected") {
-    p.status = "available";
-    selectedGift = null;
-  }
-
+  p.status = p.status === "available" ? "selected" : "available";
   renderPresents();
+
+  if (p.status === "selected") {
+    document.getElementById("pix-section").scrollIntoView({ behavior: "smooth" });
+  }
 }
 
 // ==============================
@@ -351,16 +365,16 @@ function copyPixKey() {
 // ==============================
 async function sendDonation(e) {
   e.preventDefault();
-  const form = e.target;
-  const submitBtn = form.querySelector("button[type='submit']");
-  const formData = new FormData(form);
 
-  // Impede erro se nenhum presente estiver selecionado
+  // ✅ Verifica se o presente foi selecionado
   if (!selectedGift) {
-    alert("Por favor, selecione um presente antes de enviar ❤️");
+    alert("Por favor, selecione um presente antes de enviar.");
     return;
   }
 
+  const form = e.target;
+  const submitBtn = form.querySelector("button[type='submit']");
+  const formData = new FormData(form);
   formData.append("giftId", selectedGift.id);
   formData.append("giftName", selectedGift.name);
 
@@ -369,15 +383,19 @@ async function sendDonation(e) {
   submitBtn.textContent = "Enviando...";
 
   try {
-    const response = await fetch("https://cha-de-panela-site.vercel.app/send-email", {
+    const response = await fetch("http://127.0.0.1:3000/send-email", {
       method: "POST",
       body: formData,
     });
 
     const data = await response.json().catch(() => ({}));
 
-    alert("💖 Contribuição enviada com sucesso! Muito obrigado!");
-    form.reset();
+    if (response.ok && data.success) {
+      alert("💖 Contribuição enviada com sucesso! Muito obrigado!");
+      form.reset();
+    } else {
+      alert("💖 Contribuição enviada com sucesso! Muito obrigado! " + (data.message || "Tente novamente."));
+    }
   } catch (err) {
     console.error("Erro ao enviar:", err);
     alert("Erro ao enviar. Tente novamente.");
@@ -411,7 +429,9 @@ document.addEventListener("DOMContentLoaded", () => {
     { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
   );
 
-  const animated = document.querySelectorAll(".intro-card, .present-card, .pix-card");
+  const animated = document.querySelectorAll(
+    ".intro-card, .present-card, .pix-card"
+  );
   animated.forEach((el) => {
     el.style.opacity = "0";
     el.style.transform = "translateY(20px)";
@@ -426,12 +446,22 @@ document.addEventListener("DOMContentLoaded", () => {
   source.type = "audio/mpeg";
   player.appendChild(source);
 
-  document.body.addEventListener(
-    "click",
-    () => {
-      player.load();
-      player.play();
-    },
-    { once: true }
-  );
+  document.body.addEventListener("click", () => {
+    player.load();
+    player.play();
+  }, { once: true });
 });
+
+
+let selectedGift = null;
+
+function handlePresentClick(id) {
+  const p = presents.find((x) => x.id === id);
+  if (!p) return;
+
+  selectedGift = p; // guarda o presente selecionado
+  p.status = "selected";
+  renderPresents();
+
+  document.getElementById("pix-section").scrollIntoView({ behavior: "smooth" });
+}
