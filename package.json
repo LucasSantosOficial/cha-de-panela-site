@@ -6,8 +6,9 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
     "cors": "^2.8.5",
-    "nodemailer": "^6.9.5"
+    "express": "^4.19.2",
+    "nodemailer": "^6.9.5",
+    "sqlite3": "^5.1.7"
   }
 }

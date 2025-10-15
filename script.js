@@ -335,7 +335,9 @@ function handlePresentClick(id) {
   renderPresents();
 
   if (p.status === "selected") {
-    document.getElementById("pix-section").scrollIntoView({ behavior: "smooth" });
+    document
+      .getElementById("pix-section")
+      .scrollIntoView({ behavior: "smooth" });
   }
 }
 
@@ -383,11 +385,13 @@ async function sendDonation(e) {
   submitBtn.textContent = "Enviando...";
 
   try {
-   const response = await fetch("https://cha-de-panela-site.vercel.app/send-email", {
-
-      method: "POST",
-      body: formData,
-    });
+    const response = await fetch(
+      "https://cha-de-panela-site.vercel.app/send-email",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
 
     const data = await response.json().catch(() => ({}));
 
@@ -395,7 +399,10 @@ async function sendDonation(e) {
       alert("💖 Contribuição enviada com sucesso! Muito obrigado!");
       form.reset();
     } else {
-      alert("💖 Contribuição enviada com sucesso! Muito obrigado! " + (data.message || "Tente novamente."));
+      alert(
+        "💖 Contribuição enviada com sucesso! Muito obrigado! " +
+          (data.message || "Tente novamente.")
+      );
     }
   } catch (err) {
     console.error("Erro ao enviar:", err);
@@ -447,12 +454,15 @@ document.addEventListener("DOMContentLoaded", () => {
   source.type = "audio/mpeg";
   player.appendChild(source);
 
-  document.body.addEventListener("click", () => {
-    player.load();
-    player.play();
-  }, { once: true });
+  document.body.addEventListener(
+    "click",
+    () => {
+      player.load();
+      player.play();
+    },
+    { once: true }
+  );
 });
-
 
 let selectedGift = null;
 
@@ -466,7 +476,9 @@ function handlePresentClick(id) {
     if (selectedGift) selectedGift.status = "available"; // desmarca o anterior
     p.status = "selected";
     selectedGift = p;
-    document.getElementById("pix-section").scrollIntoView({ behavior: "smooth" });
+    document
+      .getElementById("pix-section")
+      .scrollIntoView({ behavior: "smooth" });
   } else if (p.status === "selected") {
     // Desmarca
     p.status = "available";
@@ -475,4 +487,3 @@ function handlePresentClick(id) {
 
   renderPresents();
 }
-
