@@ -385,33 +385,45 @@ async function sendDonation(e) {
   submitBtn.textContent = "Enviando...";
 
   try {
-    const response = await fetch(
-      "https://cha-de-panela-site.vercel.app/send-email",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
+    // 🔹 Envia o comprovante e dados da doação
+    const response = await fetch("https://webhooks.coraxy.com.br/webhook/comprovante", {
+      method: "POST",
+      body: formData,
+    });
 
     const data = await response.json().catch(() => ({}));
 
-    if (response.ok && data.success) {
+    if (response.ok) {
       alert("💖 Contribuição enviada com sucesso! Muito obrigado!");
+
+      // 🔥 Remove 1 unidade do presente no banco de dados via N8N
+      await fetch("https://webhooks.coraxy.com.br/webhook/deletar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id_presente: selectedGift.id,
+        }),
+      });
+
+      // 🛍️ Marca o presente como "Presenteado" visualmente
+      selectedGift.status = "given";
+      renderPresents();
+      selectedGift = null;
+
+      // 🔄 Limpa o formulário
       form.reset();
     } else {
-      alert(
-        "💖 Contribuição enviada com sucesso! Muito obrigado! " +
-          (data.message || "Tente novamente.")
-      );
+      alert("⚠️ Ocorreu um erro ao enviar. Tente novamente em alguns minutos.");
     }
   } catch (err) {
     console.error("Erro ao enviar:", err);
-    alert("Erro ao enviar. Tente novamente.");
+    alert("❌ Erro ao enviar. Verifique sua conexão e tente novamente.");
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = original;
   }
 }
+
 
 // ==============================
 // 🎵 ANIMAÇÕES E PLAYER
