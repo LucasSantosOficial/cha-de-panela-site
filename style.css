@@ -242,13 +242,12 @@ body {
   font-size: 1.5rem; /* um pouco maior */
   color: #db2777; /* vermelho mais vibrante */
   line-height: 1.8;
-  font-weight: 700; /* mais negrito */
-  background-color: #ffe5e5; /* fundo rosado suave */
+  font-weight: 700px; /* mais negrito */
+
   padding: 1rem;
-  border: 2px solid #db2777;
-  border-radius: 8px;
-  box-shadow: 0 0 10px #db2777; /* sombra vermelha */
+
   text-align: center;
+  animation: pulse 2s infinite;
 }
 
 /* Presents Section */
