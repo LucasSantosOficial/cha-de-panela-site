@@ -425,7 +425,18 @@ body {
   color: #db2777;
   margin-bottom: 1rem;
   font-family: "Courier New", monospace;
+  word-break: break-all;      /* quebra o e-mail em qualquer ponto */
+  overflow-wrap: break-word;  /* garante compatibilidade com navegadores modernos */
+  text-align: center;         /* centraliza em telas menores */
 }
+
+@media (max-width: 480px) {
+  .pix-key {
+    font-size: 1.2rem;        /* reduz o tamanho da fonte no celular */
+    line-height: 1.3;
+  }
+}
+
 
 .copy-button {
   display: inline-flex;
