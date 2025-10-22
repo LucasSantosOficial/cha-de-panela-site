@@ -108,7 +108,6 @@ function copyPixKey() {
 }
 
 // 💌 ENVIO DO FORMULÁRIO (EMAIL)
-
 async function sendDonation(e) {
   e.preventDefault();
   if (!selectedGift) {
@@ -138,24 +137,33 @@ async function sendDonation(e) {
 
     const data = await response.json().catch(() => ({}));
 
-   if (response.ok) {
-  alert("💖 Contribuição enviada com sucesso! Muito obrigado!");
-  
-  // 🛍️ Marca o presente como "Presenteado" visualmente
-  selectedGift.status = "given";
-  renderPresents();
-  selectedGift = null;
+    if (response.ok) {
+      alert("💖 Contribuição enviada com sucesso! Muito obrigado!");
+      
+      // 🛍️ Marca o presente como "Presenteado" visualmente
+      selectedGift.status = "given";
+      renderPresents();
+      selectedGift = null;
 
-  // 🔄 Limpa o formulário
-  form.reset();
+      // 🔄 Limpa o formulário
+      form.reset();
 
-  // 🔁 Recarrega a página após 1 segundo
-  setTimeout(() => {
-    window.location.reload();
-  }, 1000);
+      // 🔁 Recarrega a página após 1 segundo
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
 
-} else {
-  alert("⚠️ Ocorreu um erro ao enviar. Tente novamente em alguns minutos.");
+    } else {
+      alert("⚠️ Ocorreu um erro ao enviar. Tente novamente em alguns minutos.");
+    }
+
+  } catch (err) {
+    console.error("Erro ao enviar:", err);
+    alert("❌ Erro ao enviar. Verifique sua conexão e tente novamente.");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = original;
+  }
 }
 
 
