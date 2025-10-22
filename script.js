@@ -89,7 +89,7 @@ function handlePresentClick(id) {
 
 // 💳 PIX COPY
 
-const pixKey = "47745213886";
+const pixKey = "lucas4416.ls@gmail.com";
 function copyPixKey() {
   const button = document.getElementById("copy-button");
   const copyText = button.querySelector(".copy-text");
@@ -163,6 +163,9 @@ async function sendDonation(e) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   presents = await buscarDados();
+
+  // 🧩 Ordena do menor ID para o maior
+  presents.sort((a, b) => a.id - b.id);
 
   renderPresents();
 
